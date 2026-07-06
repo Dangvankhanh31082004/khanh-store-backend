@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đơn hàng - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/admin-style.css">
+</head>
+<body>
+<div class="wrapper">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header text-center">ADMIN PANEL</div>
+        <ul>
+            <li><a href="index.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+            <li><a href="orders.html" class="active"><i class="bi bi-cart-check-fill"></i> Đơn hàng</a></li>
+            <li><a href="products.html"><i class="bi bi-box-seam-fill"></i> Sản phẩm</a></li>
+            <li><a href="categories.html"><i class="bi bi-tags-fill"></i> Danh mục</a></li>
+            <li><a href="customers.html"><i class="bi bi-people-fill"></i> Khách hàng</a></li>
+            <li><a href="staff.html"><i class="bi bi-person-badge-fill"></i> Nhân sự</a></li>
+            <li><a href="stores.html"><i class="bi bi-shop"></i> Chi nhánh</a></li>
+            <li><a href="../index.html" class="text-danger mt-3 d-block"><i class="bi bi-box-arrow-left"></i> Thoát Admin</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <div class="top-navbar">
+            <button class="btn btn-light d-md-none me-2" id="sidebar-toggle"><i class="bi bi-list fs-4"></i></button>
+            <h5 class="mb-0 fw-bold">Quản lý Đơn hàng</h5>
+            <div class="d-flex align-items-center gap-2">
+                <span class="fw-medium d-none d-md-block" id="admin-name-header">Admin</span>
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" id="admin-avatar-header" style="width:40px;height:40px">A</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="d-flex gap-2 mb-4 flex-wrap">
+                <select id="status-filter" class="form-select rounded-pill" style="width:180px">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="PENDING">Chờ xử lý</option>
+                    <option value="PROCESSING">Đang xử lý</option>
+                    <option value="SHIPPED">Đang giao</option>
+                    <option value="DELIVERED">Đã giao</option>
+                    <option value="CANCELLED">Đã hủy</option>
+                </select>
+            </div>
+
+            <div class="table-wrapper">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr><th>Mã Đơn</th><th>Người nhận</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Thanh toán</th><th>Trạng thái</th><th>Hành động</th></tr>
+                        </thead>
+                        <tbody id="orders-tbody">
+                            <tr><td colspan="7" class="text-center py-4"><div class="spinner-border text-primary"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav id="orders-pagination"></nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Chi tiết & Cập nhật trạng thái -->
+<div class="modal fade" id="orderModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="orderModalTitle">Chi tiết đơn hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="orderModalBody"></div>
+            <div class="modal-footer">
+                <select id="update-status-select" class="form-select rounded-pill me-auto" style="width:auto">
+                    <option value="PENDING">Chờ xử lý</option>
+                    <option value="PROCESSING">Đang xử lý</option>
+                    <option value="SHIPPED">Đang giao</option>
+                    <option value="DELIVERED">Đã giao</option>
+                    <option value="CANCELLED">Đã hủy</option>
+                </select>
+                <button type="button" class="btn btn-dark rounded-pill px-4" id="update-status-btn">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/api.js"></script>
+<script src="../assets/main.js"></script>
+<script src="assets/admin-main.js"></script>
+<script>
+    let viewingOrderId = null;
+    let currentPage = 1;
+
+    const STATUS_BADGE = {
+        'PENDING':    '<span class="badge bg-warning text-dark">Chờ xử lý</span>',
+        'PROCESSING': '<span class="badge bg-info text-dark">Đang xử lý</span>',
+        'SHIPPED':    '<span class="badge bg-primary">Đang giao</span>',
+        'DELIVERED':  '<span class="badge bg-success">Đã giao</span>',
+        'CANCELLED':  '<span class="badge bg-danger">Đã hủy</span>'
+    };
+
+    async function loadOrders(page = 1) {
+        currentPage = page;
+        const status = document.getElementById('status-filter').value;
+        let url = `/orders/admin/all?page=${page}&limit=15`;
+        if (status) url += `&status=${status}`;
+
+        const tbody = document.getElementById('orders-tbody');
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4"><div class="spinner-border text-primary"></div></td></tr>';
+
+        try {
+            const res = await api.get(url);
+            tbody.innerHTML = '';
+            if (!res.data.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Không có đơn hàng nào.</td></tr>';
+                return;
+            }
+            res.data.forEach(o => {
+                const date = new Date(o.order_date).toLocaleDateString('vi-VN');
+                const statusUpper = (o.status || 'PENDING').toUpperCase();
+                const badge = STATUS_BADGE[statusUpper] || `<span class="badge bg-secondary">${o.status}</span>`;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="fw-bold">#${String(o.id).padStart(6,'0')}</td>
+                    <td>${o.customer_name || '---'}</td>
+                    <td>${date}</td>
+                    <td>${formatPrice(o.total_amount)}</td>
+                    <td><small class="text-uppercase text-muted">${o.payment_method || 'cod'}</small></td>
+                    <td>${badge}</td>
+                    <td><button class="btn btn-sm btn-outline-dark detail-btn" data-id="${o.id}">Chi tiết</button></td>`;
+                tbody.appendChild(tr);
+            });
+
+            tbody.querySelectorAll('.detail-btn').forEach(btn => btn.addEventListener('click', () => showOrderDetail(btn.dataset.id)));
+            renderPagination(res.pagination, document.getElementById('orders-pagination'), loadOrders);
+        } catch(e) {
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">${e.message}</td></tr>`;
+        }
+    }
+
+    async function showOrderDetail(orderId) {
+        viewingOrderId = orderId;
+        const modal = new bootstrap.Modal(document.getElementById('orderModal'));
+        const body = document.getElementById('orderModalBody');
+        body.innerHTML = '<div class="text-center py-3"><div class="spinner-border text-primary"></div></div>';
+        modal.show();
+
+        try {
+            const res = await api.get(`/orders/${orderId}`);
+            const o = res.data;
+            document.getElementById('orderModalTitle').textContent = `Đơn #${String(o.id).padStart(6,'0')}`;
+            document.getElementById('update-status-select').value = (o.status || 'PENDING').toUpperCase();
+
+            const itemsHtml = o.items.map(item => `
+                <div class="d-flex justify-content-between mb-2">
+                    <span>${item.product_name} <small class="text-muted">x${item.quantity}</small></span>
+                    <span>${formatPrice(item.unit_price * item.quantity)}</span>
+                </div>`).join('');
+
+            body.innerHTML = `
+                <p><b>Khách hàng:</b> ${o.customer_name || '---'} &nbsp;|&nbsp; ${o.customer_phone || ''}</p>
+                <p><b>Địa chỉ nhận:</b> ${o.shipping_address}</p>
+                ${o.notes ? `<p><b>Ghi chú:</b> ${o.notes}</p>` : ''}
+                <hr>
+                <h6 class="fw-bold">Sản phẩm</h6>
+                ${itemsHtml}
+                <hr>
+                <div class="d-flex justify-content-between fs-5">
+                    <b>Tổng cộng:</b><b class="text-danger">${formatPrice(o.total_amount)}</b>
+                </div>`;
+        } catch(e) {
+            body.innerHTML = '<p class="text-danger">Không thể tải chi tiết.</p>';
+        }
+    }
+
+    document.getElementById('update-status-btn').addEventListener('click', async () => {
+        if (!viewingOrderId) return;
+        const newStatus = document.getElementById('update-status-select').value;
+        try {
+            await api.put(`/orders/${viewingOrderId}/status`, { status: newStatus });
+            bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
+            loadOrders(currentPage);
+        } catch(e) { alert('Lỗi cập nhật: ' + e.message); }
+    });
+
+    function renderPagination({ page, totalPages }, navEl, onPageChange) {
+        if (totalPages <= 1) { navEl.innerHTML = ''; return; }
+        let html = '<ul class="pagination justify-content-center mt-3">';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<li class="page-item ${i === page ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+        }
+        html += '</ul>';
+        navEl.innerHTML = html;
+        navEl.querySelectorAll('a.page-link').forEach(a => {
+            a.addEventListener('click', e => { e.preventDefault(); onPageChange(parseInt(e.target.dataset.page)); });
+        });
+    }
+
+    document.getElementById('status-filter').addEventListener('change', () => loadOrders(1));
+
+    document.addEventListener('DOMContentLoaded', () => {
+        adminInit();
+        loadOrders();
+    });
+</script>
+</body>
+</html>

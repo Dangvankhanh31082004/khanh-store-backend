@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KHÁNH STORE - Trang chủ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-dark" href="index.html">KHÁNH<span class="text-primary">STORE</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto ms-4">
+                    <li class="nav-item"><a class="nav-link active" href="index.html">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="products.html">Sản phẩm</a></li>
+                </ul>
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item me-3">
+                        <a class="nav-link position-relative" href="cart.html">
+                            <i class="bi bi-cart3 fs-5"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">2</span>
+                        </a>
+                    </li>
+                    <li class="nav-item"><a class="btn btn-outline-dark btn-sm rounded-pill px-4" href="auth.html">Đăng nhập</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="hero-title">Đẳng Cấp Công Nghệ Mới</h1>
+            <p class="lead mb-4">Khám phá hàng ngàn sản phẩm Laptop, PC và linh kiện cao cấp với giá ưu đãi nhất.</p>
+            <a href="products.html" class="btn btn-light btn-custom text-dark px-5 py-3 shadow">Mua sắm ngay</a>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="container mb-5">
+        <h3 class="fw-bold mb-4">Sản phẩm nổi bật</h3>
+        <div class="row g-4" id="featured-products-container">
+            <!-- Sản phẩm động sẽ được load vào đây -->
+            <div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer text-center">
+        <div class="container">
+            <h4 class="text-white mb-3">KHÁNH STORE</h4>
+            <p>Hệ thống bán lẻ thiết bị công nghệ hàng đầu Việt Nam.</p>
+            <p class="mb-0 mt-4">&copy; 2026 Khánh Store. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/api.js"></script>
+    <script src="assets/main.js"></script>
+    <script>
+        async function loadFeaturedProducts() {
+            try {
+                // Lấy 4 sản phẩm mới nhất
+                const response = await api.get('/products?limit=4');
+                const container = document.getElementById('featured-products-container');
+                container.innerHTML = '';
+
+                if (!response.data || response.data.length === 0) {
+                    container.innerHTML = '<p class="text-center text-muted">Hiện tại chưa có sản phẩm nào nổi bật.</p>';
+                    return;
+                }
+
+                response.data.forEach(product => {
+                    const cardCol = document.createElement('div');
+                    cardCol.className = 'col-md-3 col-sm-6';
+                    cardCol.innerHTML = `
+                        <div class="card product-card h-100">
+                            <img src="${getProductImageUrl(product.image_url)}" class="card-img-top" alt="${product.name}">
+                            <div class="card-body text-center d-flex flex-column justify-content-between">
+                                <h5 class="card-title fw-semibold text-truncate" title="${product.name}">${product.name}</h5>
+                                <div>
+                                    <p class="price-tag">${formatPrice(product.price)}</p>
+                                    <a href="detail.html?id=${product.id}" class="btn btn-primary-custom w-100">Xem chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(cardCol);
+                });
+            } catch (error) {
+                console.error('Lỗi khi tải sản phẩm nổi bật:', error);
+                document.getElementById('featured-products-container').innerHTML = '<p class="text-center text-danger">Lỗi tải dữ liệu sản phẩm.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadFeaturedProducts);
+    </script>
+</body>
+</html>

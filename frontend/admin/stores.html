@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Chi nhánh - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/admin-style.css">
+</head>
+<body>
+<div class="wrapper">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header text-center">ADMIN PANEL</div>
+        <ul>
+            <li><a href="index.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
+            <li><a href="orders.html"><i class="bi bi-cart-check-fill"></i> Đơn hàng</a></li>
+            <li><a href="products.html"><i class="bi bi-box-seam-fill"></i> Sản phẩm</a></li>
+            <li><a href="categories.html"><i class="bi bi-tags-fill"></i> Danh mục</a></li>
+            <li><a href="customers.html"><i class="bi bi-people-fill"></i> Khách hàng</a></li>
+            <li><a href="staff.html"><i class="bi bi-person-badge-fill"></i> Nhân sự</a></li>
+            <li><a href="stores.html" class="active"><i class="bi bi-shop"></i> Chi nhánh</a></li>
+            <li><a href="../index.html" class="text-danger mt-3 d-block"><i class="bi bi-box-arrow-left"></i> Thoát Admin</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <div class="top-navbar">
+            <button class="btn btn-light d-md-none me-2" id="sidebar-toggle"><i class="bi bi-list fs-4"></i></button>
+            <h5 class="mb-0 fw-bold">Quản lý Chi nhánh</h5>
+            <div class="d-flex align-items-center gap-2">
+                <span class="fw-medium d-none d-md-block" id="admin-name-header">Admin</span>
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" id="admin-avatar-header" style="width:40px;height:40px">A</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="d-flex justify-content-end mb-4">
+                <button class="btn btn-dark rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#storeModal" id="add-store-btn">
+                    <i class="bi bi-plus-lg me-2"></i>Thêm chi nhánh
+                </button>
+            </div>
+
+            <div class="row g-4" id="stores-container">
+                <div class="text-center py-5"><div class="spinner-border text-primary"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm/Sửa chi nhánh -->
+<div class="modal fade" id="storeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="storeModalTitle">Thêm chi nhánh mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="store-id">
+                <div class="mb-3">
+                    <label class="form-label">Tên chi nhánh <span class="text-danger">*</span></label>
+                    <input type="text" id="store-name" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Địa chỉ <span class="text-danger">*</span></label>
+                    <input type="text" id="store-address" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" id="store-phone" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-dark rounded-pill px-4" id="save-store-btn">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/api.js"></script>
+<script src="../assets/main.js"></script>
+<script src="assets/admin-main.js"></script>
+<script>
+    let editingStoreId = null;
+
+    async function loadStores() {
+        const container = document.getElementById('stores-container');
+        try {
+            const res = await api.get('/stores');
+            container.innerHTML = '';
+            if (!res.data.length) {
+                container.innerHTML = '<p class="text-muted text-center">Chưa có chi nhánh nào.</p>';
+                return;
+            }
+            res.data.forEach(s => {
+                const col = document.createElement('div');
+                col.className = 'col-md-6 col-lg-4';
+                col.innerHTML = `
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-primary text-white me-3"><i class="bi bi-shop"></i></div>
+                            <h5 class="fw-bold mb-0">${s.name}</h5>
+                        </div>
+                        <p class="text-muted mb-1"><i class="bi bi-geo-alt me-2"></i>${s.address}</p>
+                        <p class="text-muted mb-1"><i class="bi bi-telephone me-2"></i>${s.phone || 'Chưa có'}</p>
+                        <div class="d-flex gap-2 mt-auto">
+                            <button class="btn btn-sm btn-outline-primary flex-grow-1 edit-store-btn" data-id="${s.id}"><i class="bi bi-pencil"></i> Sửa</button>
+                            <button class="btn btn-sm btn-outline-danger delete-store-btn" data-id="${s.id}"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>`;
+                container.appendChild(col);
+            });
+            container.querySelectorAll('.edit-store-btn').forEach(btn => btn.addEventListener('click', () => openEditModal(btn.dataset.id)));
+            container.querySelectorAll('.delete-store-btn').forEach(btn => btn.addEventListener('click', () => deleteStore(btn.dataset.id)));
+        } catch(e) {
+            container.innerHTML = `<p class="text-danger">${e.message}</p>`;
+        }
+    }
+
+    async function openEditModal(storeId) {
+        editingStoreId = storeId;
+        document.getElementById('storeModalTitle').textContent = 'Chỉnh sửa chi nhánh';
+        try {
+            const res = await api.get(`/stores/${storeId}`);
+            const s = res.data;
+            document.getElementById('store-id').value = storeId;
+            document.getElementById('store-name').value = s.name;
+            document.getElementById('store-address').value = s.address;
+            document.getElementById('store-phone').value = s.phone || '';
+        } catch(e) { alert('Lỗi tải chi nhánh: ' + e.message); return; }
+        new bootstrap.Modal(document.getElementById('storeModal')).show();
+    }
+
+    document.getElementById('add-store-btn').addEventListener('click', () => {
+        editingStoreId = null;
+        document.getElementById('storeModalTitle').textContent = 'Thêm chi nhánh mới';
+        ['store-id','store-name','store-address','store-phone'].forEach(id => document.getElementById(id).value = '');
+    });
+
+    document.getElementById('save-store-btn').addEventListener('click', async () => {
+        const name = document.getElementById('store-name').value.trim();
+        const address = document.getElementById('store-address').value.trim();
+        if (!name || !address) { alert('Tên và địa chỉ là bắt buộc!'); return; }
+        const payload = {
+            name, address,
+            phone: document.getElementById('store-phone').value.trim()
+        };
+        try {
+            if (editingStoreId) {
+                await api.put(`/stores/${editingStoreId}`, payload);
+            } else {
+                await api.post('/stores', payload);
+            }
+            bootstrap.Modal.getInstance(document.getElementById('storeModal')).hide();
+            loadStores();
+        } catch(e) { alert('Lỗi lưu chi nhánh: ' + e.message); }
+    });
+
+    async function deleteStore(id) {
+        if (!confirm('Xóa chi nhánh này?')) return;
+        try {
+            await api.delete(`/stores/${id}`);
+            loadStores();
+        } catch(e) { alert('Lỗi xóa: ' + e.message); }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        adminInit();
+        loadStores();
+    });
+</script>
+</body>
+</html>
