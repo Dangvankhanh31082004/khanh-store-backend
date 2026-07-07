@@ -38,7 +38,17 @@ const api = {
             });
 
 
-            const data = await response.json();
+         const text = await response.text();
+
+let data;
+
+try {
+    data = JSON.parse(text);
+} catch (e) {
+    console.error("Backend trả về HTML:", text);
+    throw new Error("Sai API: " + response.url);
+}
+
 
 
             if (!response.ok) {
