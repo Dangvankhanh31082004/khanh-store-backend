@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sản phẩm - KHÁNH STORE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white sticky-top py-3">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-lightning-charge-fill"></i>KHÁNH<span>STORE</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="products.html">Sản phẩm</a></li>
+                    <li class="nav-item me-2"><a class="nav-link position-relative" href="cart.html"><i class="bi bi-cart3 fs-5"></i><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-badge" style="display:none">0</span></a></li>
+                    <li class="nav-item"><a class="btn btn-login btn-sm" href="auth.html">Đăng nhập</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 my-5">
+        <div class="row">
+            <!-- Sidebar Filter -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-soft rounded-4 p-4">
+                    <h5 class="fw-bold mb-4 text-primary-navy">Bộ Lọc</h5>
+                    
+                    <!-- Category Filter -->
+                    <div class="mb-4">
+                        <label class="fw-bold mb-3 d-block">Danh Mục</label>
+                        <div id="category-list" class="d-flex flex-column gap-2">
+                            <div><input type="radio" name="category" value="" id="cat-all" checked> <label for="cat-all" class="cursor-pointer mb-0">Tất Cả</label></div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Price Filter -->
+                    <div>
+                        <label class="fw-bold mb-3 d-block">Khoảng Giá (VNĐ)</label>
+                        <div class="mb-2">
+                            <input type="number" id="minPrice" class="form-control form-control-sm" placeholder="Giá tối thiểu" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <input type="number" id="maxPrice" class="form-control form-control-sm" placeholder="Giá tối đa" min="0">
+                        </div>
+                        <button id="applyFilter" class="btn btn-primary-custom btn-sm w-100">Áp Dụng</button>
+                        <button id="clearFilter" class="btn btn-secondary-custom btn-sm w-100 mt-2">Xóa Bộ Lọc</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div class="col-lg-9">
+                <!-- Search & Sort -->
+                <div class="mb-4 d-flex gap-2 flex-wrap">
+                    <input type="text" id="searchInput" class="form-control rounded-pill flex-grow-1" placeholder="🔍 Tìm sản phẩm...">
+                    <select id="sortSelect" class="form-select w-auto rounded-pill">
+                        <option value="">Mới Nhất</option>
+                        <option value="price-asc">Giá: Thấp → Cao</option>
+                        <option value="price-desc">Giá: Cao → Thấp</option>
+                    </select>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="row g-4" id="products-container">
+                    <div class="col-12 text-center py-5"><div class="spinner-border text-primary"></div></div>
+                </div>
+
+                <!-- Pagination -->
+                <nav id="pagination-container" class="mt-5"></nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-md-3">
+                    <h5><i class="bi bi-lightning-charge-fill"></i> KHÁNH STORE</h5>
+                    <p class="small">Đơn vị bán lẻ thiết bị công nghệ hàng đầu Việt Nam.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Về Chúng Tôi</h5>
+                    <ul class="list-unstyled">
+                        <li><a class="footer-link" href="#">Giới thiệu</a></li>
+                        <li><a class="footer-link" href="#">Chính sách bảo mật</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Hỗ Trợ</h5>
+                    <ul class="list-unstyled">
+                        <li><a class="footer-link" href="#">Liên hệ</a></li>
+                        <li><a class="footer-link" href="#">Hướng dẫn mua hàng</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Kết Nối</h5>
+                    <a href="#" class="footer-link me-2"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="footer-link me-2"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="footer-link"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 KHÁNH STORE. Bản quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/api.js"></script>
+    <script src="assets/main.js"></script>
+    <script>
+        let currentPage = 1;
+        let currentFilters = { category: '', min_price: null, max_price: null, search: '' };
+
+        async function loadCategories() {
+            try {
+                const res = await api.get('/categories');
+                const list_div = document.getElementById('category-list');
+                list_div.innerHTML = '<div><input type="radio" name="category" value="" id="cat-all" checked> <label for="cat-all" class="cursor-pointer mb-0">Tất Cả</label></div>';
+                res.data.forEach(cat => {
+                    const item = document.createElement('div');
+                    item.innerHTML = `<input type="radio" name="category" value="${cat.id}" id="cat-${cat.id}"> <label for="cat-${cat.id}" class="cursor-pointer mb-0">${cat.name}</label>`;
+                    list_div.appendChild(item);
+                });
+                document.querySelectorAll('input[name="category"]').forEach(radio => {
+                    radio.addEventListener('change', () => { currentFilters.category = radio.value; loadProducts(1); });
+                });
+            } catch (e) { console.error('Lỗi tải danh mục:', e); }
+        }
+
+        async function loadProducts(page = 1) {
+            currentPage = page;
+            let url = `/products?page=${page}&limit=12`;
+            if (currentFilters.category) url += `&category_id=${currentFilters.category}`;
+            if (currentFilters.min_price) url += `&min_price=${currentFilters.min_price}`;
+            if (currentFilters.maxPrice) url += `&max_price=${currentFilters.max_price}`;
+            if (currentFilters.search) url += `&search=${encodeURIComponent(currentFilters.search)}`;
+
+            const container = document.getElementById('products-container');
+            container.innerHTML = '<div class="col-12 text-center py-5"><div class="spinner-border text-primary"></div></div>';
+
+            try {
+                const res = await api.get(url);
+                container.innerHTML = '';
+                if (!res.data || res.data.length === 0) {
+                    container.innerHTML = '<div class="col-12"><p class="text-center text-muted">Không tìm thấy sản phẩm.</p></div>';
+                    return;
+                }
+
+                res.data.forEach(p => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-6 col-lg-4';
+                    col.innerHTML = `
+                        <div class="card product-card h-100 shadow-soft">
+                            <img src="${getProductImageUrl(p.image_url)}" class="card-img-top" alt="${p.name}">
+                            <div class="card-body d-flex flex-column">
+                                <span class="card-badge">${p.category_name || 'Sản phẩm'}</span>
+                                <h6 class="card-title text-truncate" title="${p.name}">${p.name}</h6>
+                                <div class="card-price">${formatPrice(p.price)}</div>
+                                <p class="card-stock"><i class="bi bi-check-circle-fill text-success"></i> ${p.stock_quantity} sản phẩm</p>
+                                <a href="detail.html?id=${p.id}" class="btn btn-primary-custom mt-auto">Xem Chi Tiết</a>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(col);
+                });
+
+                // Phân trang
+                const pagination = document.getElementById('pagination-container');
+                const totalPages = Math.ceil(res.pagination.total / 12);
+                let html = '<ul class="pagination justify-content-center gap-2">';
+                for (let i = 1; i <= totalPages; i++) {
+                    html += `<li class="page-item ${i === page ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                }
+                html += '</ul>';
+                pagination.innerHTML = html;
+                pagination.querySelectorAll('a.page-link').forEach(a => {
+                    a.addEventListener('click', e => { e.preventDefault(); loadProducts(parseInt(e.target.dataset.page)); });
+                });
+            } catch (e) {
+                container.innerHTML = '<div class="col-12"><p class="text-center text-danger">Lỗi tải dữ liệu.</p></div>';
+            }
+        }
+
+        document.getElementById('applyFilter').addEventListener('click', () => {
+            currentFilters.min_price = parseInt(document.getElementById('minPrice').value) || null;
+            currentFilters.maxPrice = parseInt(document.getElementById('maxPrice').value) || null;
+            loadProducts(1);
+        });
+
+        document.getElementById('clearFilter').addEventListener('click', () => {
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('cat-all').checked = true;
+            document.getElementById('searchInput').value = '';
+            currentFilters = { category: '', min_price: null, maxPrice: null, search: '' };
+            loadProducts(1);
+        });
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentFilters.search = e.target.value;
+            loadProducts(1);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHeaderAuthStatus();
+            updateCartBadge();
+            loadCategories();
+            loadProducts();
+        });
+    </script>
+</body>
+</html>

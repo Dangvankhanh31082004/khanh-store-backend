@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - KHÁNH STORE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white sticky-top py-3 shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a class="navbar-brand fw-bold text-dark" href="index.html">KHÁNH<span class="text-primary">STORE</span></a>
+            <a href="products.html" class="btn btn-outline-dark btn-sm rounded-pill px-4">Tiếp tục mua sắm</a>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h2 class="fw-bold mb-4">Giỏ hàng của bạn</h2>
+
+        <!-- Trạng thái giỏ trống -->
+        <div id="empty-cart" class="text-center py-5" style="display:none">
+            <i class="bi bi-cart-x fs-1 text-muted"></i>
+            <h4 class="mt-3 text-muted">Giỏ hàng của bạn đang trống</h4>
+            <a href="products.html" class="btn btn-dark rounded-pill mt-3 px-5">Mua sắm ngay</a>
+        </div>
+
+        <div id="cart-content" class="row g-4" style="display:none">
+            <!-- Danh sách SP trong giỏ -->
+            <div class="col-lg-8">
+                <div class="bg-white rounded-4 p-4 shadow-sm">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Giá</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Tạm tính</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart-items-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tổng tiền -->
+            <div class="col-lg-4">
+                <div class="bg-white rounded-4 p-4 shadow-sm">
+                    <h5 class="fw-bold mb-4">Tóm tắt đơn hàng</h5>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Tạm tính:</span>
+                        <span class="fw-bold" id="subtotal-amount">0đ</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Phí vận chuyển:</span>
+                        <span class="text-success">Miễn phí</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4 fs-5">
+                        <span class="fw-bold">Tổng cộng:</span>
+                        <span class="text-danger fw-bold" id="total-amount">0đ</span>
+                    </div>
+                    <button id="checkout-btn" class="btn btn-dark w-100 py-3 rounded-pill fw-bold">TIẾN HÀNH THANH TOÁN</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/api.js"></script>
+    <script src="assets/main.js"></script>
+    <script>
+        let cartData = []; // Dữ liệu giỏ hàng đã validate từ Server
+
+        async function loadCart() {
+            const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            if (localCart.length === 0) {
+                document.getElementById('empty-cart').style.display = 'block';
+                return;
+            }
+
+            try {
+                // Gọi API validate để lấy giá và kiểm tra tồn kho thực tế từ Server
+                const res = await api.post('/orders/validate-cart', { items: localCart });
+                cartData = res.data;
+                document.getElementById('cart-content').style.display = 'flex';
+                renderCartItems(cartData, res.total_amount);
+            } catch (e) {
+                // Nếu giỏ hàng có sản phẩm không còn tồn tại, xóa giỏ và thông báo
+                alert('Lỗi kiểm tra giỏ hàng: ' + e.message + '\nVui lòng kiểm tra lại giỏ hàng của bạn.');
+                document.getElementById('empty-cart').style.display = 'block';
+            }
+        }
+
+        function renderCartItems(items, total) {
+            const tbody = document.getElementById('cart-items-body');
+            tbody.innerHTML = '';
+            let subtotal = 0;
+
+            items.forEach((item, index) => {
+                const lineTotal = item.price * item.request_quantity;
+                subtotal += lineTotal;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="${getProductImageUrl(item.image_url)}" width="60" class="rounded me-3" alt="${item.name}">
+                            <div>
+                                <h6 class="mb-0">${item.name}</h6>
+                                <small class="text-danger remove-btn" style="cursor:pointer" data-id="${item.product_id}">Xóa</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${formatPrice(item.price)}</td>
+                    <td width="15%">
+                        <input type="number" class="form-control text-center qty-input" value="${item.request_quantity}" min="1" max="${item.request_quantity + 99}" data-id="${item.product_id}">
+                    </td>
+                    <td class="text-end fw-bold">${formatPrice(lineTotal)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('subtotal-amount').textContent = formatPrice(subtotal);
+            document.getElementById('total-amount').textContent = formatPrice(subtotal);
+
+            // Xử lý nút xóa từng sản phẩm
+            tbody.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    removeFromCart(parseInt(btn.dataset.id));
+                    location.reload();
+                });
+            });
+
+            // Cập nhật số lượng khi thay đổi input
+            tbody.querySelectorAll('.qty-input').forEach(input => {
+                input.addEventListener('change', () => {
+                    updateCartQuantity(parseInt(input.dataset.id), parseInt(input.value));
+                    location.reload();
+                });
+            });
+        }
+
+        function removeFromCart(productId) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart = cart.filter(item => item.product_id !== productId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        function updateCartQuantity(productId, quantity) {
+            if (quantity < 1) return;
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const idx = cart.findIndex(item => item.product_id === productId);
+            if (idx > -1) cart[idx].quantity = quantity;
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        document.getElementById('checkout-btn').addEventListener('click', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Vui lòng đăng nhập để tiến hành thanh toán!');
+                window.location.href = 'auth.html';
+                return;
+            }
+            window.location.href = 'checkout.html';
+        });
+
+        document.addEventListener('DOMContentLoaded', loadCart);
+    </script>
+</body>
+</html>
