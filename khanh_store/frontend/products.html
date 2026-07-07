@@ -166,7 +166,7 @@
                     col.className = 'col-md-6 col-lg-4';
                     col.innerHTML = `
                         <div class="card product-card h-100 shadow-soft">
-                            <img src="${getProductImageUrl(p.image_url)}" class="card-img-top" alt="${p.name}">
+                            <img src="${getProductImageUrl(p.image_url)}" class="card-img-top lazyload" alt="${p.name}" onerror="this.onerror=null;this.src='assets/placeholder.svg'" loading="lazy">
                             <div class="card-body d-flex flex-column">
                                 <span class="card-badge">${p.category_name || 'Sản phẩm'}</span>
                                 <h6 class="card-title text-truncate" title="${p.name}">${p.name}</h6>

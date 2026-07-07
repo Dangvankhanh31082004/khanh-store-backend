@@ -33,7 +33,7 @@
     <div id="product-detail" class="container my-5" style="display:none">
         <div class="row bg-white p-5 rounded-4 shadow-sm">
             <div class="col-md-6 text-center">
-                <img id="product-img" src="" class="img-fluid rounded-4 mb-4" alt="Product" style="max-height:400px; object-fit:contain">
+                <img id="product-img" src="" class="img-fluid rounded-4 mb-4 lazyload" alt="Product" style="max-height:400px; object-fit:contain" loading="lazy" onerror="this.onerror=null;this.src='assets/placeholder.svg'">
             </div>
             <div class="col-md-6 d-flex flex-column justify-content-center">
                 <span class="text-muted text-uppercase small fw-bold" id="product-category"></span>

@@ -1,55 +1,111 @@
 const authService = require('../services/authService');
+const { sendSuccess, sendError } = require('../utils/responseHelper');
 
 const authController = {
     register: async (req, res) => {
         try {
             const result = await authService.register(req.body);
-            res.status(201).json({ message: result.message });
+            sendSuccess(res, null, result.message);
         } catch (error) {
-            console.error('Lỗi khi đăng ký:', error);
-            res.status(error.status || 500).json({ message: error.message || 'Lỗi server nội bộ.' });
+            console.error('Error during registration:', error);
+            sendError(res, error);
         }
     },
 
     login: async (req, res) => {
         try {
             const result = await authService.login(req.body);
-            res.json({ message: 'Đăng nhập thành công', ...result });
+            sendSuccess(res, result, 'Đăng nhập thành công');
         } catch (error) {
-            console.error('Lỗi khi đăng nhập:', error);
-            res.status(error.status || 500).json({ message: error.message || 'Lỗi server nội bộ.' });
+            console.error('Error during login:', error);
+            sendError(res, error);
         }
     },
 
     me: async (req, res) => {
         try {
             const user = await authService.getProfile(req.user.id);
-            res.json({ message: 'Lấy thông tin cá nhân thành công', data: user });
+            sendSuccess(res, user, 'Lấy thông tin cá nhân thành công');
         } catch (error) {
-            console.error('Lỗi khi lấy thông tin người dùng:', error);
-            res.status(error.status || 500).json({ message: error.message || 'Lỗi server nội bộ.' });
+            console.error('Error fetching profile:', error);
+            sendError(res, error);
         }
     },
 
     updateProfile: async (req, res) => {
         try {
             const updatedUser = await authService.updateProfile(req.user.id, req.body);
-            res.json({ message: 'Cập nhật hồ sơ thành công', data: updatedUser });
+            sendSuccess(res, updatedUser, 'Cập nhật hồ sơ thành công');
         } catch (error) {
-            console.error('Lỗi cập nhật hồ sơ:', error);
-            res.status(error.status || 500).json({ message: error.message || 'Lỗi server nội bộ.' });
+            console.error('Error updating profile:', error);
+            sendError(res, error);
         }
     },
 
     refreshToken: async (req, res) => {
         try {
             const tokens = await authService.refreshToken(req.body.refreshToken);
-            res.json(tokens);
+            sendSuccess(res, tokens);
         } catch (error) {
-            console.error('Lỗi refresh token:', error);
-            res.status(error.status || 500).json({ message: error.message || 'Lỗi server nội bộ.' });
+            console.error('Error refreshing token:', error);
+            sendError(res, error);
         }
     }
+};
+
+module.exports = authController;
+const { sendSuccess, sendError } = require('../utils/responseHelper');
+
+const authController = {
+  register: async (req, res) => {
+    try {
+      const result = await authService.register(req.body);
+      sendSuccess(res, null, result.message);
+    } catch (error) {
+      console.error('Error during registration:', error);
+      sendError(res, error);
+    }
+  },
+
+  login: async (req, res) => {
+    try {
+      const result = await authService.login(req.body);
+      sendSuccess(res, result, 'Đăng nhập thành công');
+    } catch (error) {
+      console.error('Error during login:', error);
+      sendError(res, error);
+    }
+  },
+
+  me: async (req, res) => {
+    try {
+      const user = await authService.getProfile(req.user.id);
+      sendSuccess(res, user, 'Lấy thông tin cá nhân thành công');
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      sendError(res, error);
+    }
+  },
+
+  updateProfile: async (req, res) => {
+    try {
+      const updatedUser = await authService.updateProfile(req.user.id, req.body);
+      sendSuccess(res, updatedUser, 'Cập nhật hồ sơ thành công');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      sendError(res, error);
+    }
+  },
+
+  refreshToken: async (req, res) => {
+    try {
+      const tokens = await authService.refreshToken(req.body.refreshToken);
+      sendSuccess(res, tokens);
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      sendError(res, error);
+    }
+  }
 };
 
 module.exports = authController;
