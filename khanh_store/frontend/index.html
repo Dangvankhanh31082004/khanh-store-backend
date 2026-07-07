@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KHÁNH STORE - Laptop, PC, Linh Kiện Công Nghệ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white sticky-top py-3">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="bi bi-lightning-charge-fill"></i>KHÁNH<span>STORE</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    <li class="nav-item"><a class="nav-link active" href="index.html">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="products.html">Sản phẩm</a></li>
+                    <li class="nav-item"><a class="nav-link" href="products.html#categories">Danh mục</a></li>
+                    <li class="nav-item me-2"><a class="nav-link position-relative" href="cart.html"><i class="bi bi-cart3 fs-5"></i><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cart-badge" style="display:none">0</span></a></li>
+                    <li class="nav-item"><a class="btn btn-login btn-sm" href="auth.html">Đăng nhập</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content text-center text-white">
+            <h1 class="hero-title">Đẳng Cấp Công Nghệ Mới</h1>
+            <p class="hero-subtitle">Khám phá Laptop, PC và linh kiện cao cấp với giá tốt nhất</p>
+            <a href="products.html" class="btn btn-hero">MUA SẮM NGAY</a>
+        </div>
+    </section>
+
+    <!-- Featured Categories -->
+    <section class="container py-5">
+        <h2 class="section-title">Danh Mục Nổi Bật</h2>
+        <div class="row g-4 mb-5" id="categories-container">
+            <div class="text-center py-5 w-100"><div class="spinner-border text-primary"></div></div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="container py-5 bg-light-blue rounded-4">
+        <h2 class="section-title ms-0">Sản Phẩm Nổi Bật</h2>
+        <div class="row g-4" id="featured-products-container">
+            <div class="text-center py-5 w-100"><div class="spinner-border text-primary"></div></div>
+        </div>
+        <div class="text-center mt-5">
+            <a href="products.html" class="btn btn-primary-custom" style="max-width:300px; margin:0 auto;">Xem Tất Cả Sản Phẩm</a>
+        </div>
+    </section>
+
+    <!-- Stores Section -->
+    <section class="container py-5">
+        <h2 class="section-title">Chi Nhánh Của Chúng Tôi</h2>
+        <div class="row g-4" id="stores-container">
+            <div class="text-center py-5 w-100"><div class="spinner-border text-primary"></div></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-md-3">
+                    <h5><i class="bi bi-lightning-charge-fill"></i> KHÁNH STORE</h5>
+                    <p class="small">Đơn vị bán lẻ thiết bị công nghệ hàng đầu Việt Nam với hơn 1000+ sản phẩm chính hãng.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Về Chúng Tôi</h5>
+                    <ul class="list-unstyled">
+                        <li><a class="footer-link" href="#">Giới thiệu</a></li>
+                        <li><a class="footer-link" href="#">Chính sách bảo mật</a></li>
+                        <li><a class="footer-link" href="#">Điều khoản dịch vụ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Hỗ Trợ</h5>
+                    <ul class="list-unstyled">
+                        <li><a class="footer-link" href="#">Liên hệ</a></li>
+                        <li><a class="footer-link" href="#">Hướng dẫn mua hàng</a></li>
+                        <li><a class="footer-link" href="#">Chính sách trả hàng</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Kết Nối</h5>
+                    <div class="text-light">
+                        <a href="#" class="footer-link"><i class="bi bi-facebook"></i> Facebook</a><br>
+                        <a href="#" class="footer-link"><i class="bi bi-twitter"></i> Twitter</a><br>
+                        <a href="#" class="footer-link"><i class="bi bi-instagram"></i> Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 KHÁNH STORE. Bản quyền được bảo lưu. | Thiết kế chuyên nghiệp cho Đồ án Khóa Luận</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/api.js"></script>
+    <script src="assets/main.js"></script>
+    <script>
+        async function loadFeaturedProducts() {
+            try {
+                const response = await api.get('/products?limit=8');
+                const container = document.getElementById('featured-products-container');
+                container.innerHTML = '';
+
+                if (!response.data || response.data.length === 0) {
+                    container.innerHTML = '<div class="col-12"><p class="text-center text-muted">Hiện tại chưa có sản phẩm.</p></div>';
+                    return;
+                }
+
+                response.data.forEach(product => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-6 col-lg-3';
+                    col.innerHTML = `
+                        <div class="card product-card h-100 shadow-soft">
+                            <img src="${getProductImageUrl(product.image_url)}" class="card-img-top" alt="${product.name}">
+                            <div class="card-body d-flex flex-column">
+                                <span class="card-badge">Laptop</span>
+                                <h6 class="card-title text-truncate" title="${product.name}">${product.name}</h6>
+                                <div class="card-price">${formatPrice(product.price)}</div>
+                                <p class="card-stock"><i class="bi bi-check-circle-fill text-success"></i> Còn hàng</p>
+                                <a href="detail.html?id=${product.id}" class="btn btn-primary-custom mt-auto">Xem Chi Tiết</a>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(col);
+                });
+            } catch (e) {
+                console.error('Lỗi tải sản phẩm:', e);
+                document.getElementById('featured-products-container').innerHTML = '<div class="col-12"><p class="text-center text-danger">Lỗi tải dữ liệu.</p></div>';
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await api.get('/categories');
+                const container = document.getElementById('categories-container');
+                container.innerHTML = '';
+
+                if (!response.data || response.data.length === 0) return;
+
+                response.data.slice(0, 6).forEach(cat => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-2 col-sm-4 col-6';
+                    col.innerHTML = `
+                        <a href="products.html?category=${cat.id}" class="text-decoration-none">
+                            <div class="card h-100 text-center shadow-soft transition-smooth" style="cursor:pointer;">
+                                <div class="card-body py-4">
+                                    <i class="bi bi-box-seam fs-1 text-primary-navy"></i>
+                                    <p class="fw-bold mt-3 small">${cat.name}</p>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                    container.appendChild(col);
+                });
+            } catch (e) {
+                console.error('Lỗi tải danh mục:', e);
+            }
+        }
+
+        async function loadStores() {
+            try {
+                const response = await api.get('/stores');
+                const container = document.getElementById('stores-container');
+                container.innerHTML = '';
+
+                if (!response.data || response.data.length === 0) return;
+
+                response.data.forEach(store => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-6 col-lg-4';
+                    col.innerHTML = `
+                        <div class="card h-100 shadow-soft border-0 rounded-4">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary-navy"><i class="bi bi-shop me-2"></i>${store.name}</h5>
+                                <p class="card-text small mb-2"><i class="bi bi-geo-alt-fill"></i> ${store.address || 'Địa chỉ'}</p>
+                                <p class="card-text small"><i class="bi bi-telephone-fill"></i> ${store.phone || 'Số điện thoại'}</p>
+                                <button class="btn btn-sm btn-primary-custom mt-3">Liên Hệ</button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(col);
+                });
+            } catch (e) {
+                console.error('Lỗi tải chi nhánh:', e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHeaderAuthStatus();
+            updateCartBadge();
+            loadFeaturedProducts();
+            loadCategories();
+            loadStores();
+        });
+    </script>
+</body>
+</html>
