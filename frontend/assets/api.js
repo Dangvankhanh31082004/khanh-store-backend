@@ -38,16 +38,16 @@ const api = {
             });
 
 
-         const text = await response.text();
-
-let data;
-
-try {
-    data = JSON.parse(text);
-} catch (e) {
-    console.error("Backend trả về HTML:", text);
-    throw new Error("Sai API: " + response.url);
-}
+            const text = await response.text();
+            let data = {};
+            if (text.trim()) {
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error("Backend returned non-JSON response:", text);
+                    data = { message: text };
+                }
+            }
 
 
 

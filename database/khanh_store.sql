@@ -165,7 +165,7 @@ INSERT INTO roles (name, description) VALUES
 -- 2. Insert Dummy Users
 -- Admin
 INSERT INTO users (id, username, email, password_hash, role_id) VALUES 
-(1, 'admin', 'admin@khanhstore.com', '$2b$10$KMyZwCeXqh0NHrsbkTME9uaJtxwMLINz0HmZUjTLYBCpm9EMi.MNi', 1);
+(1, 'admin', 'admin@khanhstore.com', '$2b$10$BEfEpGbu5Jn5rLe3EwA2KOtnRX6ynuahDreZO4MtEVfH0KeFQRSWO', 1);
 
 -- Customer
 INSERT INTO users (id, username, email, password_hash, role_id) VALUES 

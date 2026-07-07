@@ -50,10 +50,24 @@ const authorize = (roles = []) => {
 
         if (!isAuthorized) {
             return res.status(403).json({ message: 'Truy cập bị từ chối. Bạn không có đủ quyền hạn!' });
+module.exports = {
+    authenticate: async (req, res, next) => {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        if (!token) return res.status(401).json({ success: false, message: 'Missing token' });
+        try {
+            const payload = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = payload;
+            next();
+        } catch (err) {
+            return res.status(403).json({ success: false, message: 'Invalid token' });
         }
-        
+    },
+    authorize: (allowedRoles) => (req, res, next) => {
+        if (!req.user) return res.status(401).json({ success: false, message: 'Unauthenticated' });
+        const userRole = req.user.role?.toLowerCase();
+        const hasAccess = allowedRoles.some(r => r.toLowerCase() === userRole);
+        if (!hasAccess) return res.status(403).json({ success: false, message: 'Forbidden: insufficient role' });
         next();
-    };
+    }
 };
-
-module.exports = { authenticate, authorize };

@@ -4,8 +4,15 @@ const slugify = require('slugify');
 const Product = require('../models/productModel');
 
 const productService = {
-    getAll: async (query) => {
-        return await Product.findAll(query);
+    getAll: async ({ page = 1, limit = 10, search, category_id, store_id }) => {
+        const offset = (Number(page) - 1) * Number(limit);
+        return await Product.findAll({
+            search,
+            category_id,
+            store_id,
+            limit: Number(limit),
+            offset
+        });
     },
 
     getById: async (id) => {
@@ -88,4 +95,4 @@ const productService = {
     }
 };
 
-module.exports = productService;
+module.exports = productService;    

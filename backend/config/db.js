@@ -5,14 +5,15 @@ dotenv.config();
 
 // Khởi tạo Connection Pool cho MySQL
 const pool = mysql.createPool({
-    host: process.env.DB_HOST,
+    host: process.env.DB_HOST || '127.0.0.1',
     port: parseInt(process.env.DB_PORT, 10) || 3306,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || process.env.DATABASE || 'khanh_store',
     waitForConnections: true,
     connectionLimit: 10, // Giới hạn số lượng connection đồng thời
     queueLimit: 0
 });
 
 module.exports = pool;
+

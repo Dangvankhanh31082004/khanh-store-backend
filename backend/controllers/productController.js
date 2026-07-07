@@ -16,18 +16,12 @@ const productController = {
             } = req.query;
 
 
-            const result = await productService.getProducts({
-
-                page:Number(page),
-
-                limit:Number(limit),
-
+            const result = await productService.getAll({
+                page: Number(page),
+                limit: Number(limit),
                 search,
-
                 category_id,
-
                 store_id
-
             });
 
 
@@ -69,9 +63,7 @@ const productController = {
         try{
 
 
-            const product = await productService.getProductById(
-                req.params.id
-            );
+            const product = await productService.getById(req.params.id);
 
 
             if(!product){
@@ -117,12 +109,9 @@ const productController = {
         try{
 
 
-            const id = await productService.createProduct({
-
+            const id = await productService.create({
                 ...req.body,
-
-                file:req.file
-
+                file: req.file
             });
 
 
@@ -158,15 +147,7 @@ const productController = {
         try{
 
 
-            await productService.updateProduct(
-
-                req.params.id,
-
-                req.body,
-
-                req.file
-
-            );
+            await productService.update(req.params.id, req.body, req.file);
 
 
             res.json({

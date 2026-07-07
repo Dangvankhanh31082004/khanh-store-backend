@@ -3,7 +3,10 @@ const express = require("express");
 const router = express.Router();
 
 const productController = require("../controllers/productController");
+const { authenticate, authorize } = require("../middlewares/authMiddleware");
 
+const manageRoles = ['staff', 'manager', 'admin', 'owner'];
+const deleteRoles = ['manager', 'admin', 'owner'];
 
 // GET ALL PRODUCTS
 router.get(
@@ -22,6 +25,8 @@ router.get(
 // CREATE PRODUCT
 router.post(
     "/",
+    authenticate,
+    authorize(manageRoles),
     productController.createProduct
 );
 
@@ -29,6 +34,8 @@ router.post(
 // UPDATE PRODUCT
 router.put(
     "/:id",
+    authenticate,
+    authorize(manageRoles),
     productController.updateProduct
 );
 
@@ -36,6 +43,8 @@ router.put(
 // DELETE PRODUCT
 router.delete(
     "/:id",
+    authenticate,
+    authorize(deleteRoles),
     productController.deleteProduct
 );
 
