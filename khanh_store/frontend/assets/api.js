@@ -10,7 +10,7 @@ const API_BASE_URL = (() => {
     }
 
     // Không gọi /api trên Vercel vì frontend và backend deploy tách riêng.
-    return '/api';
+ return 'https://khanh-store-backend-production.up.railway.app/api';
 })();
 
 window.API_BASE_URL = API_BASE_URL;
