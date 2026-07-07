@@ -111,5 +111,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`KHANH STORE SERVER RUNNING PORT ${PORT}`);
 });
-
-module.exports = app;
